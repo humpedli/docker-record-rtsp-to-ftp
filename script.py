@@ -39,7 +39,7 @@ class MyServer(BaseHTTPRequestHandler):
 				self.wfile.write('{"done": true}')
 				
 		except Exception as e:
-			print e
+			print(e)
 			self._set_headers()
 			self.wfile.write('{"done": false}')
 
