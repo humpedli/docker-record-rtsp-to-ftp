@@ -14,7 +14,7 @@ import sys
 import json
 from datetime import datetime
 from sys import argv
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 
 # HTTP server class
