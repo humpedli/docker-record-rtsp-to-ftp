@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 
 # install dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
-	apt-get -y install ffmpeg
+	apt-get -y install ffmpeg libav-tools
 
 # cleanup
 RUN apt-get clean && \
