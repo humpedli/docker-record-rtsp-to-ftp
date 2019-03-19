@@ -46,12 +46,12 @@ class MyServer(BaseHTTPRequestHandler):
 # Record and upload data
 def record_and_upload(post_data):
 	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mov'
-	os.system(('avconv -rtsp_transport tcp -y -i %s -vcodec copy -an -strict experimental -t %s /tmp/%s && curl --upload-file /tmp/%s %s%s && rm /tmp/%s > /dev/null') % (post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name))
+	os.system(('avconv -rtsp_transport tcp -y -i %s -vcodec copy -an -strict experimental -t %d /tmp/%s && curl --upload-file /tmp/%s %s%s && rm /tmp/%s > /dev/null') % (post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name))
 	print ('Recorded and uploaded file: %s') % (file_name)
 
 # Main Loop
 def main_loop(port=11122):
-	print ('Started http server on port: %s') % (port)
+	print ('Started http server on port: %d') % (port)
 	HTTPServer(('', port), MyServer).serve_forever()
 
 # Start main loop
