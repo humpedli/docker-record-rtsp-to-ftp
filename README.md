@@ -4,6 +4,8 @@ This script records a video from RTSP stream and upload it to and FTP server.
 
 The main concept is that the camera motion script triggers the POST api of this script with config data and the script will record the remote RTSP stream and will upload the recorded video to a remote FTP server:
 
+*Note: DO NOT expose this service to WAN, use only on LAN (there is no authentication on the API)*
+
 **POST data:**
 
 http://<script_runner_machine_ip>:11122
