@@ -36,22 +36,22 @@ class MyServer(BaseHTTPRequestHandler):
 				t.setDaemon(False)
 				t.start()
 				self._set_headers()
-				self.wfile.write('{"done": true}')
+				self.wfile.write(bytes('{"done": true}', 'utf-8'))
 				
 		except Exception as e:
 			print(e)
 			self._set_headers()
-			self.wfile.write('{"done": false}')
+			self.wfile.write(bytes('{"done": false}', 'utf-8'))
 
 # Record and upload data
 def record_and_upload(post_data):
 	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mov'
-	os.system(('avconv -rtsp_transport tcp -y -i %s -vcodec copy -an -strict experimental -t %d /tmp/%s && curl --upload-file /tmp/%s %s%s && rm /tmp/%s > /dev/null') % (post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name))
-	print ('Recorded and uploaded file: %s') % (file_name)
+	os.system(('avconv -rtsp_transport tcp -y -i {} -vcodec copy -an -strict experimental -t {} /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name)))
+	print('Recorded and uploaded file: {}'.format(file_name))
 
 # Main Loop
 def main_loop(port=11122):
-	print ('Started http server on port: %d') % (port)
+	print('Started http server on port: {}'.format(port))
 	HTTPServer(('', port), MyServer).serve_forever()
 
 # Start main loop
@@ -61,5 +61,5 @@ try:
 	else:
 		main_loop()
 except KeyboardInterrupt:
-	print ('Interrupted by keypress')
+	print('Interrupted by keypress')
 	sys.exit(0)
