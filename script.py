@@ -32,7 +32,9 @@ class MyServer(BaseHTTPRequestHandler):
 		post_data = json.loads(self.rfile.read(content_length))
 		try:
 			if post_data['name'] and post_data['duration'] and post_data['stream_url'] and post_data['ftp_url']:
-				record_and_upload(post_data)
+				t = threading.Thread(target=record_and_upload, args=[post_data])
+				t.setDaemon(False)
+				t.start()
 				self._set_headers()
 				self.wfile.write(bytes('{"done": true}', 'utf-8'))
 				
