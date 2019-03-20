@@ -9,7 +9,7 @@ __copyright__ = 'Copyright (C) Tamas Kinsztler'
 __license__ = 'GPLv3'
 __version__ = '1.0'
 
-import os
+import subprocess
 import sys
 import json
 from datetime import datetime
@@ -32,9 +32,7 @@ class MyServer(BaseHTTPRequestHandler):
 		post_data = json.loads(self.rfile.read(content_length))
 		try:
 			if post_data['name'] and post_data['duration'] and post_data['stream_url'] and post_data['ftp_url']:
-				t = threading.Thread(target=record_and_upload, args=[post_data])
-				t.setDaemon(False)
-				t.start()
+				record_and_upload(post_data)
 				self._set_headers()
 				self.wfile.write(bytes('{"done": true}', 'utf-8'))
 				
@@ -46,7 +44,10 @@ class MyServer(BaseHTTPRequestHandler):
 # Record and upload data
 def record_and_upload(post_data):
 	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mov'
-	os.system(('avconv -rtsp_transport tcp -y -i {} -vcodec copy -an -strict experimental -t {} /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name)))
+	print('Start recording: {}'.format(file_name))
+	process = subprocess.Popen(('ffmpeg -rtsp_transport tcp -y -i {} -t {} -vcodec copy -acodec copy /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name)), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = process.communicate()
+	errcode = process.returncode
 	print('Recorded and uploaded file: {}'.format(file_name))
 
 # Main Loop
