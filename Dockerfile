@@ -1,4 +1,4 @@
-FROM python:3-stretch
+FROM python:3
 
 # copy files
 COPY . /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 
 # install dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
-	apt-get -y install ffmpeg libav-tools
+	apt-get -y install ffmpeg
 
 # cleanup
 RUN apt-get clean && \
